@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Unity WebGL Player | AR_HostOnGithub</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+
+  <style>
+    body.loading {
+      background-color: #7B02FD;
+    }
+
+    body.ready {
+      background: url('TemplateData/UI_30.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+    body.done { 
+      background-color: #7B02FD; }
+
+    #loadingBar {
+      background: rgba(123, 2, 253, 0.8);
+    }
+  </style>
+
+
+</head>
+
+<body class="loading">
+  <div id="unity-container" class="unity-desktop">    
+    <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>    
+    <div id="unity-loading-bar">      
+      <div id="unity-logo"></div>      
+      <div id="unity-progress-bar-empty">        
+        <div id="unity-progress-bar-full"></div>      
+      </div>    
+    </div>    
+    <div id="unity-warning"> </div>    
+    <div id="unity-footer">      
+      <div id="unity-webgl-logo"></div>      
+      <div id="unity-fullscreen-button"></div>      
+      <div id="unity-build-title">AR_HostOnGithub</div>    
+    </div>  
+  </div>  
+  <script>    
+    var container = document.querySelector("#unity-container");    
+    var canvas = document.querySelector("#unity-canvas");    
+    var loadingBar = document.querySelector("#unity-loading-bar");    
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");    
+    var fullscreenButton = document.querySelector("#unity-fullscreen-button");    
+    var warningBanner = document.querySelector("#unity-warning");    
+    function unityShowBanner(msg, type) {      
+      function updateBannerVisibility() {        
+        warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';      
+      }      
+      var div = document.createElement('div');      
+      div.innerHTML = msg;      
+      warningBanner.appendChild(div);      
+      if (type == 'error') div.style = 'background: red; padding: 10px;';      
+      else {        
+        if (type == 'warning') div.style = 'background: yellow; padding: 10px;';        
+        setTimeout(function () {          
+          warningBanner.removeChild(div);          
+          updateBannerVisibility();        
+        }, 5000);      
+      }      
+      updateBannerVisibility();    
+    }    
+    var buildUrl = "Build";    
+    var loaderUrl = buildUrl + "/B02.loader.js";    
+    var config = {      
+      dataUrl: buildUrl + "/b47a526f9b7e09daa5394f5b3c46a89f.data.unityweb",      
+      frameworkUrl: buildUrl + "/25907b9af02cefc893ad214e87f37eba.js.unityweb",      
+      codeUrl: buildUrl + "/55e27ba5e167f88ee412b1cfd0134c20.wasm.unityweb",      
+      streamingAssetsUrl: "StreamingAssets",      
+      companyName: "DefaultCompany",    
+      productName: "AR_HostOnGithub",    
+      productVersion: "0.1.0",    
+      showBanner: unityShowBanner,    
+    };    
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {      
+      var meta = document.createElement('meta');      
+      meta.name = 'viewport';      
+      meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';      
+      document.getElementsByTagName('head')[0].appendChild(meta);      
+      container.className = "unity-mobile";      
+      canvas.className = "unity-mobile";      
+    } else {      
+      canvas.style.width = "960px";      
+      canvas.style.height = "600px";    
+    }    
+    canvas.style.background = "url('" + buildUrl + "/c4e0d9b725e7e6292d3f15f2ead9190f.jpg') center / cover";    
+    loadingBar.style.display = "block";    
+    var script = document.createElement("script");    
+    script.src = loaderUrl;    
+    script.onload = () => {      
+      createUnityInstance(canvas, config, (progress) => {        
+        progressBarFull.style.width = 100 * progress + "%";      
+      }).then((unityInstance) => {        
+        document.body.classList.remove('loading');
+        document.body.classList.add('ready');
+        loadingBar.style.display = "none";        
+        fullscreenButton.onclick = () => {          
+          unityInstance.SetFullscreen(1);        
+        };        
+
+        // �������ГQ����ɫ
+        setTimeout(() => {
+          document.body.classList.remove('ready');
+          document.body.classList.add('done');
+        }, 5000); // ���t5���ГQ�����ɫ���������{���r�g
+      }).catch((message) => {        
+        alert(message);      
+      });    
+    };    
+    document.body.appendChild(script);  
+  </script>
+</body>
+
+
+</html>
+
